@@ -18,17 +18,25 @@ data "aws_vpc" "default" {
   default = true
 }
 
+<<<<<<< HEAD
 resource "aws_instance" "web" {
   ami           = data.aws_ami.app_ami.id
   instance_type = "t3.nano"
+=======
+resource "aws_instance" "blog" {
+  ami                    = data.aws_ami.app_ami.id
+  instance_type          = var.instance_type
+  vpc_security_group_ids = [module.blog_sg.security_group_id]
+>>>>>>> 03_07
 
   vpc_security_group_ids = [aws_security_group.blog.id]
 
   tags = {
-    Name = "HelloWorld"
+    Name = "Learning Terraform"
   }
 }
 
+<<<<<<< HEAD
 resource "aws_security_group" "blog" {
   name        = "blog"
   description = "Allow HTTP & HTTPS in. Allow all out."
@@ -65,3 +73,19 @@ resource "aws_security_group_rule" "blog_everything_out" {
 
   security_group_id = aws_security_group.blog.id
 }
+=======
+module "blog_sg" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "5.3.1"
+  name = "blog_new"
+
+  vpc_id  = data.aws_vpc.default.id
+  
+  ingress_rules       = ["http-80-tcp", "https-443-tcp"]
+  ingress_cidr_blocks = ["0.0.0.0/0"]
+
+  egress_rules       = ["all-all"]
+  egress_cidr_blocks = ["0.0.0.0/0"]
+}
+
+>>>>>>> 03_07
